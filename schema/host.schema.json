@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kvnloo/z0-hosts-template/schema/host.schema.json",
+  "title": "Z0HostOverlay",
+  "description": "One host directory hosts/<host_id>/ of a private z0-hosts instance, read as {component: <component>.toml}. Every object is closed. The schema has no key for an IP address, a tailnet name or a secret: consumers discover addresses at runtime (tailscale ip -4, tailscale status --json) and read secrets from their own secret store. Ports use 0 for 'not set on this host'.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "host": {
+      "description": "host.toml: which machine this directory belongs to.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "match_hostnames": { "type": "array", "items": { "$ref": "#/$defs/hostname" } },
+        "fleet_host": { "$ref": "#/$defs/host_id", "description": "The .files fleet.toml [hosts.<key>] this machine resolves to (for example desktop or laptop)." },
+        "profile": { "$ref": "#/$defs/host_id" },
+        "hypr_host": { "$ref": "#/$defs/hostname" },
+        "nix_home": { "type": "string", "pattern": "^([a-z_][a-z0-9_-]*@[A-Za-z0-9][A-Za-z0-9-]*)?$" },
+        "owner_user": { "type": "string", "pattern": "^([a-z_][a-z0-9_-]*)?$" }
+      }
+    },
+    "dash": {
+      "description": "dash.toml: read by kvnloo/dash bridge/src/z0-hosts.ts.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "voice": { "type": "object", "additionalProperties": false, "properties": { "broker_port": { "$ref": "#/$defs/port" } } },
+        "models": { "type": "object", "additionalProperties": false, "properties": {
+          "tiny_port": { "$ref": "#/$defs/port" },
+          "tiny_host": { "$ref": "#/$defs/host_id" } } },
+        "identity": { "type": "object", "additionalProperties": false, "properties": {
+          "port": { "$ref": "#/$defs/port" },
+          "issuer": { "type": "string", "pattern": "^([a-z0-9]+:[a-z0-9-]+)?$" } } },
+        "dev": { "type": "object", "additionalProperties": false, "properties": {
+          "metro_port": { "$ref": "#/$defs/port" },
+          "web_port": { "$ref": "#/$defs/port" },
+          "stage_port": { "$ref": "#/$defs/port" },
+          "build_node": { "$ref": "#/$defs/host_id" } } },
+        "paths": { "type": "object", "additionalProperties": false, "properties": {
+          "upstream_gate_dir": { "$ref": "#/$defs/path" },
+          "supervision_dir": { "$ref": "#/$defs/path" },
+          "z0live_sessions_dir": { "$ref": "#/$defs/path" },
+          "factory_repo": { "$ref": "#/$defs/path" },
+          "fleet_registry": { "$ref": "#/$defs/path" },
+          "artifacts_dir": { "$ref": "#/$defs/path" },
+          "trace_proto_dir": { "$ref": "#/$defs/path" } } },
+        "hermes": { "$ref": "#/$defs/hermes" }
+      }
+    },
+    "z0int": {
+      "description": "z0int.toml: read by kvnloo/z0intelligence src/z0int/hosts.py.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paths": { "type": "object", "additionalProperties": false, "properties": {
+          "operations_root": { "$ref": "#/$defs/path" },
+          "repo": { "$ref": "#/$defs/path" },
+          "policy_root": { "$ref": "#/$defs/path" },
+          "routing_root": { "$ref": "#/$defs/path" },
+          "agentsview_data_dir": { "$ref": "#/$defs/path" },
+          "quiet_lane_lock": { "$ref": "#/$defs/path" },
+          "z0int_bin": { "$ref": "#/$defs/path" },
+          "shadow_source": { "$ref": "#/$defs/path" },
+          "openjev_python": { "$ref": "#/$defs/path" },
+          "hf_home": { "$ref": "#/$defs/path" },
+          "evolution_lab_root": { "$ref": "#/$defs/path" },
+          "evolution_lab_python": { "$ref": "#/$defs/path" },
+          "kerdoios_plugin": { "$ref": "#/$defs/path" },
+          "hermes_home": { "$ref": "#/$defs/path" },
+          "omp_sessions": { "$ref": "#/$defs/path" },
+          "canonical_repo": { "$ref": "#/$defs/path" } } },
+        "cognition": { "type": "object", "additionalProperties": false, "properties": {
+          "llama_server": { "$ref": "#/$defs/path" },
+          "gguf_dir": { "$ref": "#/$defs/path" } } },
+        "julia": { "type": "object", "additionalProperties": false, "properties": {
+          "python": { "$ref": "#/$defs/path" },
+          "model_dir": { "$ref": "#/$defs/path" } } },
+        "bench": { "type": "object", "additionalProperties": false, "properties": {
+          "julia_parquet": { "$ref": "#/$defs/path" },
+          "btzsc_dir": { "$ref": "#/$defs/path" },
+          "jev_benchmarks_dir": { "$ref": "#/$defs/path" } } },
+        "farm_router": { "type": "object", "additionalProperties": false, "properties": {
+          "host": { "$ref": "#/$defs/host_id" },
+          "port": { "$ref": "#/$defs/port" } } },
+        "policy": { "type": "object", "additionalProperties": false, "properties": {
+          "engine_root_name": { "$ref": "#/$defs/host_id" } } },
+        "verify": { "type": "object", "additionalProperties": false, "properties": {
+          "allowed_host": { "$ref": "#/$defs/host_id" } } },
+        "lab": { "type": "object", "additionalProperties": false, "properties": {
+          "slm_device": { "$ref": "#/$defs/host_id" } } },
+        "file_search": { "type": "object", "additionalProperties": false, "properties": {
+          "forbidden_roots": { "type": "array", "items": { "$ref": "#/$defs/path" } } } }
+      }
+    },
+    "z0evals": {
+      "description": "z0evals.toml: read by kvnloo/z0evals scripts/hosts.py.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "openjev_root": { "$ref": "#/$defs/path" },
+        "hermes_home": { "$ref": "#/$defs/path" },
+        "hermes_k8s_lab_dir": { "$ref": "#/$defs/path" },
+        "local_router_port": { "$ref": "#/$defs/port" }
+      }
+    },
+    "onboard": {
+      "description": "onboard.toml: read by the kvnloo/z0 hub onboarding (z0 onboard).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspace_root": { "$ref": "#/$defs/path" },
+        "repos_dir": { "$ref": "#/$defs/path" },
+        "profile": { "$ref": "#/$defs/host_id" },
+        "components": { "type": "array", "items": { "$ref": "#/$defs/host_id" } }
+      }
+    },
+    "files": {
+      "description": "files.toml: read by kvnloo/.files scripts/host_overlay.py.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "storage": { "type": "object", "additionalProperties": false, "properties": {
+          "model_root": { "$ref": "#/$defs/path" },
+          "workspace_root": { "$ref": "#/$defs/path" },
+          "release_root": { "$ref": "#/$defs/path" },
+          "release_mount": { "$ref": "#/$defs/path" },
+          "offload_root": { "$ref": "#/$defs/path" },
+          "runs_dir": { "$ref": "#/$defs/path" },
+          "z0_farm_root": { "$ref": "#/$defs/path" },
+          "docker_data": { "$ref": "#/$defs/path" },
+          "containerd": { "$ref": "#/$defs/path" },
+          "k3s_data": { "$ref": "#/$defs/path" },
+          "swapfile": { "$ref": "#/$defs/path" },
+          "steam_library": { "$ref": "#/$defs/path" },
+          "wallpaper_dir": { "$ref": "#/$defs/path" },
+          "theme_asset_root": { "$ref": "#/$defs/path" } } },
+        "services": {
+          "description": "services.<service>.<listener> = port. 0 means the service is not installed on this host.",
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/key" },
+          "additionalProperties": {
+            "type": "object",
+            "propertyNames": { "$ref": "#/$defs/key" },
+            "additionalProperties": { "$ref": "#/$defs/port" }
+          }
+        },
+        "k3s": { "type": "object", "additionalProperties": false, "properties": {
+          "control_plane": { "$ref": "#/$defs/host_id" },
+          "cpu_worker": { "$ref": "#/$defs/host_id" } } }
+      }
+    },
+    "devices": {
+      "description": "devices.toml: fleet nodes and phones this host manages, one table per device. No address keys: peers resolve by peer_hostname through tailscale status --json at runtime.",
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/key" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind"],
+        "properties": {
+          "kind": { "enum": ["node", "phone", "tablet", "other"] },
+          "peer_hostname": { "$ref": "#/$defs/hostname" },
+          "aliases": { "type": "array", "items": { "$ref": "#/$defs/hostname" } },
+          "role": { "type": "string", "pattern": "^([a-z][a-z0-9_]*)?$" },
+          "ssh_port": { "$ref": "#/$defs/port" },
+          "serial": { "type": "string", "pattern": "^[A-Za-z0-9._-]{0,64}$" },
+          "model": { "type": "string", "pattern": "^[A-Za-z0-9 ._+-]{0,64}$" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+    "path": { "type": "string", "maxLength": 4096, "pattern": "^([~/$].*)?$|^[A-Za-z0-9._-]+$" },
+    "host_id": { "type": "string", "pattern": "^([a-z0-9][a-z0-9_-]{0,62})?$" },
+    "hostname": { "type": "string", "pattern": "^([A-Za-z0-9][A-Za-z0-9-]{0,62})?$", "description": "A single DNS label. A dot is never allowed, so a MagicDNS (FQDN) name cannot be stored." },
+    "key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,62}$" },
+    "hermes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "home": { "$ref": "#/$defs/path" },
+        "profiles_dir": { "$ref": "#/$defs/path" },
+        "source_dir": { "$ref": "#/$defs/path" },
+        "state_db": { "$ref": "#/$defs/path" },
+        "apis": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/key" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": { "$ref": "#/$defs/port" },
+              "key_file": { "$ref": "#/$defs/path", "description": "Path to the key file only. Never the key." }
+            }
+          }
+        }
+      }
+    }
+  }
+}

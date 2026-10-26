@@ -1,0 +1,23 @@
+# kvnloo/.files (scripts/host_overlay.py). Absent keys fall back to the neutral defaults
+# documented in .files docs/host-overlay.md.
+[storage]
+model_root = "/srv/models"
+workspace_root = "~/workspace"
+release_root = "/srv/models/releases"
+release_mount = "/srv/models"
+offload_root = "/srv/models/host-offload"
+k3s_data = "~/workspace/k3s-data"
+wallpaper_dir = "$XDG_DATA_HOME/wallpapers"
+theme_asset_root = "$XDG_DATA_HOME/z0/themes"
+
+# services.<service>.<listener> = port; 0 = not installed on this host.
+[services.dash]
+bridge_port = 4747
+metro_port = 0
+
+[services.ollama]
+port = 11434
+
+[k3s]
+control_plane = "example-host"
+cpu_worker = ""

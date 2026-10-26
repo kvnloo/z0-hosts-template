@@ -1,0 +1,5 @@
+# kvnloo/z0 hub onboarding.
+workspace_root = "~/workspace"
+repos_dir = "~/.z0/repos"
+profile = "desktop"
+components = ["dash", "z0intelligence"]

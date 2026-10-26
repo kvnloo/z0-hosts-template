@@ -1,0 +1,36 @@
+# kvnloo/dash. Every key is optional; an absent key keeps the code default or disables the feature.
+[voice]
+broker_port = 0               # 0 = native voice broker not configured
+
+[models]
+tiny_port = 0                 # 0 = tiny model health reports "unavailable"
+tiny_host = ""                # host_id that serves the tiny model; "" = this host
+
+[identity]
+port = 4789
+issuer = "z0bridge:example-host"
+
+[dev]
+metro_port = 8081             # Expo defaults
+web_port = 8081
+stage_port = 0                # 0 = pick a free port
+build_node = ""
+
+[paths]
+upstream_gate_dir = "~/.local/share/dash/upstream-gate"
+supervision_dir = "~/.local/share/dash/supervision"
+z0live_sessions_dir = "~/.local/share/z0live/sessions"
+factory_repo = ""
+fleet_registry = ""
+artifacts_dir = ""
+trace_proto_dir = ""
+
+[hermes]
+home = "~/.hermes"
+profiles_dir = "~/.hermes/profiles"
+source_dir = "~/.hermes/hermes-agent"
+state_db = ""
+
+[hermes.apis.example]
+port = 8642
+key_file = "~/.config/hermes/example.key"   # a path only, never the key itself

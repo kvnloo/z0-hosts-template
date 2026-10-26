@@ -1,0 +1,5 @@
+# kvnloo/z0evals.
+openjev_root = "~/src/openjev"
+hermes_home = "~/.hermes"
+hermes_k8s_lab_dir = ""
+local_router_port = 0

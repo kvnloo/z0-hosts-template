@@ -1,0 +1,24 @@
+# kvnloo/z0intelligence.
+[paths]
+operations_root = "~/.local/share/z0/operations"
+policy_root = "~/.z0int"
+routing_root = "~/.omp"
+agentsview_data_dir = "~/.local/share/agentsview"
+z0int_bin = "z0int"
+openjev_python = "python3"
+hf_home = "~/.cache/huggingface"
+evolution_lab_root = ""
+evolution_lab_python = "python3"
+hermes_home = "~/.hermes"
+omp_sessions = "~/.omp/agent/sessions"
+
+[cognition]
+llama_server = ""             # "" = find llama-server on PATH
+gguf_dir = "~/.local/share/z0int-models/gguf"
+
+[farm_router]
+host = ""                     # host_id of the router host; "" = this host
+port = 0                      # 0 = farm routing disabled
+
+[file_search]
+forbidden_roots = ["/srv/private"]

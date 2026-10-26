@@ -1,0 +1,15 @@
+# Fleet nodes and phones this host manages. Peers are found at runtime by peer_hostname
+# (tailscale status --json Peer[].HostName); no address is ever stored.
+[example-laptop]
+kind = "node"
+peer_hostname = "example-laptop"
+role = "cpu_worker"
+ssh_port = 22
+
+[example-phone]
+kind = "phone"
+peer_hostname = "example-phone"
+aliases = ["phone"]
+ssh_port = 8022
+serial = "TESTSERIAL01"
+model = "Example Phone 1"

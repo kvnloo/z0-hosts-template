@@ -1,0 +1,9 @@
+# Which machine this directory belongs to. Copy this directory to hosts/<your host_id>/.
+# Readers pick it when Z0_HOST_ID=<host_id>, or when the local hostname (or the
+# Tailscale Self.HostName) is in match_hostnames. Never put an address or a *.ts.net name here.
+match_hostnames = ["example-host"]
+fleet_host = "desktop"        # .files fleet.toml [hosts.<key>] for this machine
+profile = "desktop"
+hypr_host = "example-host"
+nix_home = "you@example-host"
+owner_user = "you"

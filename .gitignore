@@ -1,0 +1,10 @@
+# The overlay holds paths, ports, host ids and serials. It never holds secrets.
+*.key
+*.pem
+*.p12
+*.env
+.env*
+secrets/
+id_*
+__pycache__/
+*.pyc
