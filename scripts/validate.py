@@ -80,12 +80,12 @@ def check(schema, value, root, where, errors):
     elif t and not isinstance(value, TYPES[t]):
         return errors.append(f"{where}: expected {t}, got {type(value).__name__}")
     if "enum" in schema and value not in schema["enum"]:
-        errors.append(f"{where}: {value!r} not in {schema['enum']}")
+        errors.append(f"{where}: value not in {schema['enum']}")
     if isinstance(value, str):
         if "maxLength" in schema and len(value) > schema["maxLength"]:
             errors.append(f"{where}: longer than {schema['maxLength']}")
         if "pattern" in schema and not re.search(schema["pattern"], value):
-            errors.append(f"{where}: {value!r} does not match {schema['pattern']}")
+            errors.append(f"{where}: value does not match {schema['pattern']}")
     if isinstance(value, int) and not isinstance(value, bool):
         if "minimum" in schema and value < schema["minimum"]:
             errors.append(f"{where}: below {schema['minimum']}")
@@ -176,10 +176,11 @@ def validate(root, denylist=()):
             continue
         rel = path.relative_to(root)
         for kind, sample in scan_text(text, denylist):
-            # Never echo a denylisted literal or a secret: name the file and the kind only.
-            shown = "" if kind in ("denylisted literal",) or "key" in kind or "token" in kind \
-                or "secret" in kind else f" ({sample})"
-            errors.append(f"{rel}: {kind}{shown}")
+            # Never echo the matched value: CI logs of a public repo are public, so printing a
+            # tailnet address, a denylisted literal or a secret would leak it again.
+            # Name the file, the line and the kind only.
+            line = text.count("\n", 0, text.find(sample)) + 1 if sample in text else 0
+            errors.append(f"{rel}:{line}: {kind}")
     return hosts, errors
 
 

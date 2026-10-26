@@ -37,6 +37,19 @@ class ValidateTests(unittest.TestCase):
         (self.host / "dash.toml").write_text(f'[paths]\nartifacts_dir = "/x"\n# {TS_IP}\n')
         self.assertTrue(any("tailnet IPv4" in p for p in self.problems()))
 
+    def test_matched_values_are_never_echoed(self):
+        (self.tmp / "NOTES.md").write_text(f"{TS_IP} {TS_NAME}\n")
+        out = " ".join(self.problems())
+        self.assertNotIn(TS_IP, out)
+        self.assertNotIn(TS_NAME, out)
+        self.assertNotIn(TS_NAME.split(".")[1], out)
+
+    def test_schema_errors_do_not_echo_values(self):
+        (self.host / "devices.toml").write_text(f'[x]\nkind = "node"\npeer_hostname = "{TS_NAME}"\n')
+        out = " ".join(self.problems())
+        self.assertIn("does not match", out)
+        self.assertNotIn(TS_NAME, out)
+
     def test_documentation_fixture_range_passes(self):
         (self.host / "dash.toml").write_text("# example peer 100.64.0.1\n")
         self.assertEqual(self.problems(), [])
