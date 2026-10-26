@@ -18,13 +18,16 @@ class ValidateTests(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmp)
         shutil.copytree(ROOT / "schema", self.tmp / "schema")
-        shutil.copytree(ROOT / "hosts", self.tmp / "hosts")
+        # A self-contained fixture host, so the tests also pass in a private copy
+        # that has deleted hosts/example-host.
         self.host = self.tmp / "hosts" / "example-host"
+        self.host.mkdir(parents=True)
+        (self.host / "host.toml").write_text('match_hostnames = ["example-host"]\n')
 
     def problems(self, denylist=()):
         return validate.validate(self.tmp, denylist)[1]
 
-    def test_template_is_clean(self):
+    def test_this_repo_is_clean(self):
         self.assertEqual(validate.validate(ROOT)[1], [])
 
     def test_example_copy_is_clean(self):
