@@ -60,32 +60,4 @@ def host_id(root: Path | None = None, hostname: str | None = None) -> str:
     return "default"
 
 
-def overlay(component: str, root: Path | None = None) -> dict:
-    root = root or hosts_dir()
-    return _load(root / "hosts" / host_id(root) / f"{component}.toml")
 
-
-def self_ip4() -> str | None:
-    for ip in (tailscale_status().get("Self") or {}).get("TailscaleIPs") or []:
-        if ":" not in ip:
-            return ip
-    return None
-
-
-def self_dns_name() -> str | None:
-    name = (tailscale_status().get("Self") or {}).get("DNSName") or ""
-    return name.rstrip(".") or None
-
-
-def peer_ip4(peer_hostname: str) -> str | None:
-    for peer in (tailscale_status().get("Peer") or {}).values():
-        if peer.get("HostName") == peer_hostname:
-            return next((ip for ip in peer.get("TailscaleIPs") or [] if ":" not in ip), None)
-    return None
-
-
-def in_tailnet_cidr(ip: str) -> bool:
-    try:
-        return ipaddress.ip_address(ip) in TAILNET_V4
-    except ValueError:
-        return False
